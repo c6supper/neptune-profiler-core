@@ -8,7 +8,7 @@ Prerequisites
 
 > * I highly recommended to use docker as building host, you could follow [Jupiter](https://github.com/c6supper/Jupiter.git)
 > * gRPC
->> * gRPC isn't aim to automotive system , many problems have been met when cross compiling to aarch64 QNX from X86_64 linux host. I have forked [gRPC](https://github.com/c6supper/grpc/tree/v1.33.2_qnx) and  [abseil-cpp](https://github.com/c6supper/abseil-cpp/tree/lts_2020_02_25_qnx)(it's submodule for gRPC) which have fixed the building issues, please refer to the branch labeled as "qnx"
+>> * gRPC isn't aim to automotive system , many problems have been met when cross compiling to aarch64 QNX from X86_64 linux host. I have forked [gRPC](https://github.com/c6supper/grpc/tree/v1.33.2_qnx) and  [abseil-cpp](https://github.com/c6supper/abseil-cpp/tree/lts_2020_02_25)(it's a submodule for gRPC) which have fixed the building issues, please refer to the branches
 
 >> * [gRPC X86 Compiling Configuration Example] 
   ```bash
@@ -25,12 +25,13 @@ Prerequisites
 	-DgRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF -DgRPC_BUILD_GRPC_NODE_PLUGIN=OFF \
 	-DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN=OFF -DgRPC_BUILD_GRPC_PHP_PLUGIN=OFF \
 	-DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF \
-	-DgRPC_BUILD_CSHARP_EXT=OFF  -DgRPC_BUILD_TESTS=ON -DgRPC_PROTOBUF_PROVIDER=module \
-	-DgRPC_SSL_PROVIDER=package -DBENCHMARK_ENABLE_TESTING=off -DgRPC_ZLIB_PROVIDER=package \
+	-DgRPC_BUILD_CSHARP_EXT=OFF  -DgRPC_BUILD_TESTS=OFF -DgRPC_PROTOBUF_PROVIDER=module \
+	-DHAVE_STD_REGEX=0 -DHAVE_POSIX_REGEX=0 -DHAVE_STEADY_CLOCK=0 \
+	-DgRPC_SSL_PROVIDER=package -DBENCHMARK_ENABLE_TESTING=OFF -DgRPC_ZLIB_PROVIDER=package \
 	-DZLIB_LIBRARY=$QNX_TARGET/aarch64le/usr/lib/libz.a \
 	-DOPENSSL_CRYPTO_LIBRARY=$QNX_TARGET/aarch64le/usr/lib/libcrypto.a \
 	-DOPENSSL_SSL_LIBRARY=$QNX_TARGET/aarch64le/usr/lib/libssl.a -DCMAKE_BUILD_TYPE=Release \
-	-DZLIB_INCLUDE_DIR=$QNX_TARGET/usr/include \
+	-DZLIB_INCLUDE_DIR=$QNX_TARGET/usr/include -DBUILD_SHARED_LIBS=ON \
 	-DOPENSSL_INCLUDE_DIR=$QNX_TARGET/usr/include/openssl \
 	-DCMAKE_TOOLCHAIN_FILE=$QNX_ROOT/cmake/QNXToolchain.cmake -DCMAKE_INSTALL_PREFIX=$QNX_TARGET/aarch64le/usr/ ../.. && \
 find . -name "link.txt" -exec sed -i "s/-lrt//g" {} +;find . -name "link.txt" -exec sed -i "s/-lpthread//g" {} + && make -j64 && make install
